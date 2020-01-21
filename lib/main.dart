@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pothole/provider/cameraprovider.dart';
+import 'package:pothole/provider/camera_provider.dart';
 import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/screen_selector.dart';

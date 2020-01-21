@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
+import 'package:pothole/models/complaint.dart';
 import 'package:pothole/models/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,6 +31,23 @@ class CurrentUserProvider with ChangeNotifier{
       notifyListeners();
     } catch (e) {
       print(e.toString());
+      throw e;
+    }
+  }
+
+  Future<void> addComplaint(Complaint complaint) async{
+    final data = {
+      "authorId": complaint.authorId,
+      "image": complaint.image,
+      "description": complaint.description,
+      "location": complaint.location,
+      "time": DateTime.now().toIso8601String(),
+      "isAnonymous": complaint.isAnonymous,
+    };
+
+    try{
+      await Firestore.instance.collection("complaints").document().setData(data);
+    }on Exception catch(e){
       throw e;
     }
   }
