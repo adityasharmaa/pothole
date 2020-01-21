@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/screens/about.dart';
 import 'package:pothole/screens/auth_screen.dart';
+import 'package:pothole/screens/add_complaint.dart';
+import 'add_complaint.dart';
 
 class ScreenSelector extends StatefulWidget {
   static const route = "/screen_selector";
@@ -12,7 +14,7 @@ class ScreenSelector extends StatefulWidget {
 class _ScreenSelectorState extends State<ScreenSelector> {
   int _bottomSelectedIndex = 1;
   PageController _pageController;
-  List<String> _categoryList = ["Add Complaint", "About", "My Complaint"];
+  List<String> _titleList = ["Add Complaint", "My Complaints", "About"];
 
   @override
   void initState() {
@@ -24,7 +26,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_categoryList[_bottomSelectedIndex]),
+        title: Text(_titleList[_bottomSelectedIndex]),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.power_settings_new),
@@ -43,6 +45,8 @@ class _ScreenSelectorState extends State<ScreenSelector> {
         },
         controller: _pageController,
         children: <Widget>[
+          AddComplaint(),
+          AddComplaint(),
           About(),
         ],
       ),
@@ -51,15 +55,15 @@ class _ScreenSelectorState extends State<ScreenSelector> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
-            title: Text("Add Complaint"),
+            title: Text(_titleList[0]),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            title: Text("About"),
+            title: Text(_titleList[1]),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.create_new_folder),
-            title: Text("My Complaint"),
+            title: Text(_titleList[2]),
           ),
         ],
         onTap: (index) {

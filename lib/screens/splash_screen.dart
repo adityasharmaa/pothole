@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
+import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/screen_selector.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
@@ -17,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   AnimationController _animationController;
   Animation _logoAnimation;
-  Timer _timer;
 
   @override
   void initState() {
@@ -38,24 +39,23 @@ class _SplashScreenState extends State<SplashScreen>
       }
     });
     _animationController.forward();
-    _initTimer();
+    _init();
   }
 
-  void _initTimer(){
-    _timer = Timer(Duration(seconds: 4), () async{
-      final user = await Auth().getCurrentUser();
-      if(user != null)
-        Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
-      else
-        Navigator.of(context).pushReplacementNamed(AuthScreen.route);
-    });
+  void _init() async {
+    final user = await Auth().getCurrentUser();
+    if (user != null){
+      await Provider.of<CurrentUserProvider>(context, listen: false).getCurrentUser();
+      Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+    }
+    else
+      Navigator.of(context).pushReplacementNamed(AuthScreen.route);
   }
 
   @override
   void dispose() {
     super.dispose();
     _animationController.dispose();
-    _timer.cancel();
   }
 
   @override
@@ -82,8 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
                           return Container(
                             height: _logoAnimation.value,
                             width: _logoAnimation.value,
-                            child:
-                                Image.asset("assets/images/logo.png"),
+                            child: Image.asset("assets/images/logo.png"),
                           );
                         },
                       ),
