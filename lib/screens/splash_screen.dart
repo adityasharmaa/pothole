@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
@@ -25,10 +23,10 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(milliseconds: 700),
     );
 
-    _logoAnimation = Tween<double>(begin: 70, end: 120).animate(CurvedAnimation(
+    _logoAnimation = Tween<double>(begin: 100, end: 200).animate(CurvedAnimation(
       curve: Interval(0.0, 1, curve: Curves.easeInOut),
       parent: _animationController,
     ));
@@ -60,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final _height = MediaQuery.of(context).size.height;
-    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.longestSide;
+    final _width = MediaQuery.of(context).size.shortestSide;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
