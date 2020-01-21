@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
-import 'package:pothole/screens/about.dart';
 import 'package:pothole/screens/auth_screen.dart';
-import 'package:pothole/screens/add_complaint.dart';
-import 'package:pothole/screens/mycomplaints.dart';
+import 'about.dart';
 import 'add_complaint.dart';
+import 'mycomplaints.dart';
 
 class ScreenSelector extends StatefulWidget {
   static const route = "/screen_selector";

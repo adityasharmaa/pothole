@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
-import 'package:pothole/screens/screen_selector.dart';
 
+import 'citizen/screen_selector.dart';
 enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {

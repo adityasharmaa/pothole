@@ -61,14 +61,14 @@ class _AddComplaintState extends State<AddComplaint> {
   }
 
   void _fileComplaint() async {
-    final _mapProvider=Provider.of<GoogleMapProvider>(context,listen: false);
+    final _mapProvider = Provider.of<GoogleMapProvider>(context, listen: false);
     if (_pickedImage == null) {
       _showSnackbar("Please click an image");
       return;
     } else if (_descriptionController.text.isEmpty) {
       _showSnackbar("Please describe the problem");
       return;
-    } 
+    }
 
     setState(() {
       _isLoading = true;
@@ -118,7 +118,7 @@ class _AddComplaintState extends State<AddComplaint> {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
-    
+
     return AbsorbPointer(
       absorbing: _isLoading,
       child: Padding(
@@ -187,9 +187,7 @@ class _AddComplaintState extends State<AddComplaint> {
                       controller: _descriptionController,
                     ),
                   ),
-
                   CustomGoogleMap(),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

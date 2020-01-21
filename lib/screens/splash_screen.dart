@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
-import 'package:pothole/screens/screen_selector.dart';
 import 'package:provider/provider.dart';
+
+import 'citizen/screen_selector.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
