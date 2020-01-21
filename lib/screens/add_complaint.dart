@@ -29,8 +29,7 @@ class _AddComplaintState extends State<AddComplaint> {
 
   Future<String> _uploadImage() async {
     try {
-      final fileName =
-          Provider.of<CurrentUserProvider>(context, listen: false).profile.id;
+      final fileName = DateTime.now().toIso8601String();
 
       final storageTaskSnapshot = await FirebaseStorage.instance
           .ref()
