@@ -149,6 +149,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  geolocator:
+    dependency: "direct dev"
+    description:
+      name: geolocator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.0"
+  google_api_availability:
+    dependency: transitive
+    description:
+      name: google_api_availability
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   google_maps_flutter:
     dependency: "direct dev"
     description:
@@ -191,13 +205,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1+1"
-  location:
-    dependency: "direct dev"
+  location_permissions:
+    dependency: transitive
     description:
-      name: location
+      name: location_permissions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.5"
+    version: "2.0.4+1"
   matcher:
     dependency: transitive
     description:

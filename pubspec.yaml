@@ -35,7 +35,7 @@ dev_dependencies:
   camera: ^0.5.7+2
   path:
   path_provider:
-  location: ^2.3.5
+  geolocator:  
   google_maps_flutter: ^0.5.21+15
 
 

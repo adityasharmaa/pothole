@@ -104,7 +104,7 @@ class _AddComplaintState extends State<AddComplaint> {
               height: 5,
             ),
             Container(
-              height: _height * 0.15,
+              height: _height * 0.09,
               width: _width,
               // decoration:
               //     BoxDecoration(border: Border.all(color: Colors.black)),
@@ -113,7 +113,8 @@ class _AddComplaintState extends State<AddComplaint> {
                 
               ),
             ),
-           // CustomGoogleMap.myGoogleMapItems("Map", context),
+           CustomGoogleMap(),
+           
           ],
         ),
       ),

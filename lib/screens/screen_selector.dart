@@ -3,6 +3,7 @@ import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/screens/about.dart';
 import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/add_complaint.dart';
+import 'package:pothole/screens/mycomplaints.dart';
 import 'add_complaint.dart';
 
 class ScreenSelector extends StatefulWidget {
@@ -46,7 +47,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
         controller: _pageController,
         children: <Widget>[
           AddComplaint(),
-          AddComplaint(),
+          MyComplaints(),
           About(),
         ],
       ),
