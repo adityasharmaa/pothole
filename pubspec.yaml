@@ -32,6 +32,9 @@ dev_dependencies:
   intl: ^0.16.0
   firebase_storage: ^3.1.1
   cloud_firestore: ^0.12.10+2
+  camera: ^0.5.7+3
+  path:
+  path_provider:
 
 
 # For information on the generic Dart part of this file, see the

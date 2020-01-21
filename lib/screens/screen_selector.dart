@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
+import 'package:pothole/screens/add_complaint.dart';
 import 'package:pothole/screens/auth_screen.dart';
-
+import 'add_complaint.dart';
 import 'home.dart';
 
 class ScreenSelector extends StatefulWidget {
@@ -13,7 +14,7 @@ class ScreenSelector extends StatefulWidget {
 class _ScreenSelectorState extends State<ScreenSelector> {
   int _bottomSelectedIndex = 1;
   PageController _pageController;
-  List<String> _categoryList = ["History", "Home", "Add Complaint"];
+  List<String> _categoryList = ["Add Complaint", "Home", "My Complaints"];
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
         },
         controller: _pageController,
         children: <Widget>[
-          Home(),
+          AddComplaint(),
           Home(),
           Home(),
         ],
@@ -54,7 +55,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
-            title: Text("History"),
+            title: Text("Add Complaint"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -62,7 +63,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.create_new_folder),
-            title: Text("Add Complaint"),
+            title: Text("My Complaints"),
           ),
         ],
         onTap: (index) {
