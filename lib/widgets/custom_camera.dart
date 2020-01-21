@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pothole/provider/cameraprovider.dart';
+import 'package:pothole/provider/camera_provider.dart';
 import 'package:pothole/widgets/custompageview.dart';
 import 'package:provider/provider.dart';
 

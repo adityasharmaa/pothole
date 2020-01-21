@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'package:pothole/provider/googlemap_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   void initState() {
     super.initState();
     if (mounted) {
-      _getCurrentLocation();
+      _getCurrentLocation(context);
     }
   }
 
@@ -38,40 +39,55 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
       width: MediaQuery.of(context).size.width,
       child:_hasLoaded?Center(child: CircularProgressIndicator()):Padding(
         padding: EdgeInsets.all(1.0),
-        child: GoogleMap(
-          zoomGesturesEnabled: true,
-          markers: _markers,
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _markers.elementAt(0).position,
-            zoom: 17,
-          ),
-          gestureRecognizers: Set()
-            ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-            ..add(
-              Factory<VerticalDragGestureRecognizer>(
-                  () => VerticalDragGestureRecognizer()),
-            )
-            ..add(
-              Factory<HorizontalDragGestureRecognizer>(
-                  () => HorizontalDragGestureRecognizer()),
-            )
-            ..add(
-              Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: GoogleMap(
+              zoomGesturesEnabled: true,
+              markers: _markers,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _markers.elementAt(0).position,
+                zoom: 17,
+              ),
+              gestureRecognizers: Set()
+                ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
+                ..add(
+                  Factory<VerticalDragGestureRecognizer>(
+                      () => VerticalDragGestureRecognizer()),
+                )
+                ..add(
+                  Factory<HorizontalDragGestureRecognizer>(
+                      () => HorizontalDragGestureRecognizer()),
+                )
+                ..add(
+                  Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+                ),
             ),
+            ),
+            Positioned(
+              top: 0,
+              right: 2,
+              child: IconButton(
+                icon: Icon(Icons.refresh,size: 35,),
+                onPressed: ()=>_getCurrentLocation(context),
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
-  void _getCurrentLocation() {
+  void _getCurrentLocation(BuildContext context) {
     final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
     geolocator
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
+        .then((Position newPosition) {
       setState(() {
-        _currentPosition = position;
+        _currentPosition = newPosition;
+        Provider.of<GoogleMapProvider>(context,listen: false).changePosition(newPosition);
         _markers.add(Marker(
           markerId: MarkerId("1"),
           position: LatLng(

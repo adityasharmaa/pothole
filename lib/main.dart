@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pothole/provider/cameraprovider.dart';
+import 'package:pothole/provider/camera_provider.dart';
 import 'package:pothole/provider/current_user_provider.dart';
+import 'package:pothole/provider/googlemap_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:pothole/screens/splash_screen.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: CurrentUserProvider(),
         ),
+        ChangeNotifierProvider.value(
+          value: GoogleMapProvider(),
+        )
       ],
       child:  MaterialApp(
       title: 'Flutter Demo',
