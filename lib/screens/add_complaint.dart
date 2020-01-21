@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/provider/cameraprovider.dart';
 import 'package:pothole/widgets/custom_camera.dart';
+import 'package:pothole/widgets/custom_google_map.dart';
 import 'package:provider/provider.dart';
 
 class AddComplaint extends StatefulWidget {
@@ -98,21 +99,21 @@ class _AddComplaintState extends State<AddComplaint> {
             SizedBox(
               height: 20,
             ),
-            Align(alignment: Alignment.centerLeft,child: Text("Description",style: Theme.of(context).textTheme.subhead.copyWith(color:Colors.black),)),
+            // Align(alignment: Alignment.centerLeft,child: Text("Description",style: Theme.of(context).textTheme.subhead.copyWith(color:Colors.black),)),
             SizedBox(
               height: 5,
             ),
             Container(
-              height: _height * 0.25,
+              height: _height * 0.15,
               width: _width,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
+              // decoration:
+              //     BoxDecoration(border: Border.all(color: Colors.black)),
               child: TextField(
-                maxLines: 10,
-                decoration: InputDecoration.collapsed(hintText: "Describe your problem here"),
+                decoration: InputDecoration(hintText: "Describe your problem here"),
                 
               ),
             ),
+           // CustomGoogleMap.myGoogleMapItems("Map", context),
           ],
         ),
       ),

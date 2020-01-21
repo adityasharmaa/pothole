@@ -7,7 +7,6 @@ class CameraProvider with ChangeNotifier{
   int _count=0;
 
   List<FileSystemEntity> get images {
-    
     return [..._images];
   }
 

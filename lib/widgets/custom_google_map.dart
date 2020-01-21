@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CustomGoogleMap {
-  static  Container myGoogleMapItems(String title, double h, double w) {
+  static  Container myGoogleMapItems(String title,BuildContext context ) {
     // google map initializer
     final Set<Marker> _markers = {};
     Completer<GoogleMapController> mapController = Completer();
@@ -26,8 +26,9 @@ class CustomGoogleMap {
     }
 
     return Container(
-      height: h,
-      width: w,
+      height: MediaQuery.of(context).size.height*0.3,
+      width:MediaQuery.of(context).size.width,
+
       child: Padding(
         padding: EdgeInsets.all(1.0),
         child: GoogleMap(

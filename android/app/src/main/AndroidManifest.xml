@@ -12,6 +12,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="pothole"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAn-Msk9rO9VOTOKNFZdQ8oKkAb5UisDqs"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
