@@ -186,7 +186,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     if (imagePath == null) {
       if (_cameraProvider.images.length > 0 && _cameraProvider.count > 0) {
         return FileImage(
-            File(_cameraProvider.images[_cameraProvider.images - 2].path));
+            File(_cameraProvider.images[_cameraProvider.images.length-1].path));
       } else
         AssetImage("assets/images/empty.png");
     } else

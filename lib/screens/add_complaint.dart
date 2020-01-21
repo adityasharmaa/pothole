@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pothole/provider/cameraprovider.dart';
 import 'package:pothole/widgets/custom_camera.dart';
+import 'package:provider/provider.dart';
 
 class AddComplaint extends StatefulWidget {
   AddComplaint({Key key}) : super(key: key);
@@ -13,32 +15,58 @@ class _AddComplaintState extends State<AddComplaint> {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
+    final _cameraProvider = Provider.of<CameraProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          LimitedBox(
-              maxHeight: _height * 0.22,
-              maxWidth: _width,
-              child: GridView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: _height * 0.15,
-                    width: _width,
-                    color: Colors.blue,
-                  );
-                },
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 180,
-                    childAspectRatio: 1.8 / 2,
-                    mainAxisSpacing: 2),
-              )),
+          _cameraProvider.images.length == 0
+              ? Container(
+                  height: _height * 0.22,
+                  width: _width,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "No picture clicked !!!",
+                      style: Theme.of(context).textTheme.subhead,
+                    ),
+                  ),
+                )
+              : LimitedBox(
+                  maxHeight: _height * 0.22,
+                  maxWidth: _width,
+                  child: Center(
+                    child: GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _cameraProvider.images.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          height: _height * 0.15,
+                          width: _width,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: FileImage(
+                                _cameraProvider.images[index],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 180,
+                          childAspectRatio: 1.8 / 2,
+                          mainAxisSpacing: 2),
+                    ),
+                  )),
           SizedBox(
             height: 14,
           ),
           GestureDetector(
-            onTap: ()=>Navigator.pushNamed(context, TakePictureScreen.route),
+            onTap: () => Navigator.pushNamed(context, TakePictureScreen.route),
             child: Container(
                 height: _height * 0.06,
                 width: _width * 0.7,
