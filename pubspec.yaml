@@ -27,6 +27,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  firebase_auth: ^0.15.3+1
+  provider: ^4.0.1
+  intl: ^0.16.0
+  firebase_storage: ^3.1.1
+  cloud_firestore: ^0.12.10+2
 
 
 # For information on the generic Dart part of this file, see the
@@ -41,8 +46,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
+  assets:
+  - assets/images/logo.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
