@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
+import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/screen_selector.dart';
+import 'package:provider/provider.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -137,6 +139,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
         if(uid != null){
           if(uid.length != 0){
             await _auth.addUserToDatabase(uid, _authData);
+            await Provider.of<CurrentUserProvider>(context, listen: false).getCurrentUser();
             Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
           }else
             _showErrorDialog("Unable to sign up!");
