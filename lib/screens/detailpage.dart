@@ -45,7 +45,6 @@ class _DetailPageState extends State<DetailPage> {
     Future.delayed(Duration(milliseconds: 0), () {
       _initialize();
     });
-    addMarker();
   }
 
   Completer<GoogleMapController> mapController = Completer();
@@ -81,7 +80,9 @@ class _DetailPageState extends State<DetailPage> {
                   "Citizen"
               ? UserType.C
               : UserType.E;
+      
     });
+    addMarker();
   }
 
   void _updateComplaint() async {
@@ -285,22 +286,7 @@ class _DetailPageState extends State<DetailPage> {
                             ),
                           ],
                         ),
-                    ],
-                  ),
-                  Positioned.fill(
-                    child: _isLoading
-                        ? Container(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            color: Colors.white.withOpacity(0.8),
-                          )
-                        : Container(),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
+                        Container(
                       height: MediaQuery.of(context).size.height * 0.4,
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
@@ -329,6 +315,22 @@ class _DetailPageState extends State<DetailPage> {
                                     () => ScaleGestureRecognizer()),
                               ),
                           )))
+                    ],
+                  ),
+                  Positioned.fill(
+                    child: _isLoading
+                        ? Container(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            color: Colors.white.withOpacity(0.8),
+                          )
+                        : Container(),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  
                 ],
               ),
             ),
