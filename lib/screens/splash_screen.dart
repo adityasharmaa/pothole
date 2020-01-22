@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
+import 'package:pothole/screens/complaints_list.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:provider/provider.dart';
 
@@ -43,8 +44,12 @@ class _SplashScreenState extends State<SplashScreen>
   void _init() async {
     final user = await Auth().getCurrentUser();
     if (user != null){
-      await Provider.of<CurrentUserProvider>(context, listen: false).getCurrentUser();
-      Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+      final currentUser = Provider.of<CurrentUserProvider>(context, listen: false);
+      await currentUser.getCurrentUser();
+      if(currentUser.profile.role == "Citizen")
+        Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+      else
+        Navigator.of(context).pushReplacementNamed(ComplaintsList.route);
     }
     else
       Navigator.of(context).pushReplacementNamed(AuthScreen.route);

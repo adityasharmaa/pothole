@@ -40,11 +40,14 @@ class CurrentUserProvider with ChangeNotifier{
       "authorId": complaint.authorId,
       "image": complaint.image,
       "description": complaint.description,
-      "location": complaint.location,
+      "lat": complaint.lat,
+      "lan":complaint.lan,
       "time": DateTime.now().toIso8601String(),
       "isAnonymous": complaint.isAnonymous,
       "status": "Pending",
       "progress": 0,
+      "approved": false,
+      "priority": "Medium"
     };
 
     try{

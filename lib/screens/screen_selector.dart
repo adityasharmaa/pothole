@@ -7,6 +7,7 @@ import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/my_complaints.dart';
 import 'add_complaint.dart';
 import 'package:provider/provider.dart';
+import 'about.dart';
 
 enum PopupMenuEntries {
   Reload,

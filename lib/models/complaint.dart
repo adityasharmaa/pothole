@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Complaint{
-  final String id, authorId, image, description, location, time, status;
-  final bool isAnonymous;
+  final String id, authorId, image, description, location, time, status,lat,lan,priority;
+  final bool isAnonymous,approved;
   final int progress;
 
   Complaint({
@@ -11,10 +11,14 @@ class Complaint{
     @required this.authorId,
     @required this.image,
     @required this.description,
-    @required this.location,
     @required this.time,
     @required this.isAnonymous,
     this.status,
+    this.priority,
+    this.approved,
+    @required this.lat,
+    @required this.lan,
+    @required this.location,
     this.progress,
   });
 
@@ -29,6 +33,10 @@ class Complaint{
       time: snapshot.data["time"],
       status: snapshot.data["status"],
       progress: snapshot.data["progress"],
+      lat: snapshot.data["lat"],
+      lan: snapshot.data["lan"],
+      approved: snapshot.data["approved"],
+      priority: snapshot.data["priority"],
     );
   }
 }

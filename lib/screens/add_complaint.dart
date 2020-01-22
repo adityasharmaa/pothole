@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pothole/models/complaint.dart';
 import 'package:pothole/provider/current_user_provider.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:pothole/provider/googlemap_provider.dart';
+import 'package:pothole/widgets/custom_google_map.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddComplaint extends StatefulWidget {
   @override
@@ -59,14 +61,12 @@ class _AddComplaintState extends State<AddComplaint> {
   }
 
   void _fileComplaint() async {
+    final _mapProvider = Provider.of<GoogleMapProvider>(context, listen: false);
     if (_pickedImage == null) {
       _showSnackbar("Please click an image");
       return;
     } else if (_descriptionController.text.isEmpty) {
       _showSnackbar("Please describe the problem");
-      return;
-    } else if (_locationController.text.isEmpty) {
-      _showSnackbar("Enter location");
       return;
     }
 
@@ -92,9 +92,11 @@ class _AddComplaintState extends State<AddComplaint> {
           authorId: currentUser.profile.id,
           description: _descriptionController.text,
           image: imageUrl,
-          location: _locationController.text,
           time: DateTime.now().toIso8601String(),
           isAnonymous: _isAnonymous,
+          lat: _mapProvider.currentPosition.latitude.toString(),
+          lan: _mapProvider.currentPosition.longitude.toString(),
+          location: _locationController.text,
         ),
       );
 
@@ -103,7 +105,6 @@ class _AddComplaintState extends State<AddComplaint> {
       setState(() {
         _pickedImage = null;
         _descriptionController.clear();
-        _locationController.clear();
       });
     } catch (e) {
       _showSnackbar(e.toString());
@@ -118,6 +119,7 @@ class _AddComplaintState extends State<AddComplaint> {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
+
     return AbsorbPointer(
       absorbing: _isLoading,
       child: Padding(
@@ -189,10 +191,12 @@ class _AddComplaintState extends State<AddComplaint> {
                   Container(
                     height: _height * 0.1,
                     child: TextField(
-                      decoration: InputDecoration(hintText: "Location"),
+                      decoration: InputDecoration(
+                          hintText: "Location"),
                       controller: _locationController,
                     ),
                   ),
+                  CustomGoogleMap(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
