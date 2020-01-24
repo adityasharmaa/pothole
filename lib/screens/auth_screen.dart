@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/provider/current_user_provider.dart';
+import 'package:pothole/screens/complaints_list.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +70,8 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   final _auth = Auth();
@@ -109,7 +111,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
   }
 
   Map<String, String> _authData = {
-    "name":"",
+    "name": "",
     "role": "Citizen",
     'email': '',
     'password': '',
@@ -128,22 +130,32 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
     });
 
     try {
+      final cuser = Provider.of<CurrentUserProvider>(context, listen: false);
       if (_authMode == AuthMode.Login) {
-        final user = await _auth.signIn(_authData["email"], _authData["password"]);
-        if(user != null)
-          Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
-        else
+        final user =
+            await _auth.signIn(_authData["email"], _authData["password"]);
+        if (user != null) {
+          await cuser.getCurrentUser();
+          if (cuser.profile.role == "Citizen")
+            Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+          else
+            Navigator.of(context).pushReplacementNamed(ComplaintsList.route);
+        } else
           _showErrorDialog("Unable to log in!");
       } else {
-        final uid = await _auth.signUp(_authData["email"], _authData["password"]);
-        if(uid != null){
-          if(uid.length != 0){
+        final uid =
+            await _auth.signUp(_authData["email"], _authData["password"]);
+        if (uid != null) {
+          if (uid.length != 0) {
             await _auth.addUserToDatabase(uid, _authData);
-            await Provider.of<CurrentUserProvider>(context, listen: false).getCurrentUser();
-            Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
-          }else
+            await cuser.getCurrentUser();
+            if (cuser.profile.role == "Citizen")
+              Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+            else
+              Navigator.of(context).pushReplacementNamed(ComplaintsList.route);
+          } else
             _showErrorDialog("Unable to sign up!");
-        }else
+        } else
           _showErrorDialog("Unable to sign up!");
       }
     } catch (error) {
@@ -198,7 +210,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
         ),
         curve: Curves.linear,
         /* height: _heightAnimation.value.height, */
-        
+
         width: deviceSize.width * 0.85,
         padding: EdgeInsets.all(16.0),
         child: Form(
@@ -216,13 +228,12 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                       child: TextFormField(
                         enabled: _authMode == AuthMode.Signup,
                         decoration: InputDecoration(labelText: 'Name'),
-                        onSaved: (value){
+                        onSaved: (value) {
                           _authData["name"] = value;
                         },
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
-                                if (value.isEmpty)
-                                  return 'Enter name';
+                                if (value.isEmpty) return 'Enter name';
                                 return null;
                               }
                             : null,
@@ -249,7 +260,11 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                             _authData["role"] = newValue;
                           });
                         },
-                        items: ["Citizen", "Civil Agency", "Elected Representative"].map((value) {
+                        items: [
+                          "Citizen",
+                          "Civil Agency",
+                          "Elected Representative"
+                        ].map((value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),

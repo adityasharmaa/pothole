@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:pothole/screens/detailpage.dart';
+import 'package:pothole/screens/complaint_detail_page.dart';
 
 class ComplaintWidget extends StatelessWidget {
   final Complaint _complaint;
@@ -14,8 +14,9 @@ class ComplaintWidget extends StatelessWidget {
     final _width = MediaQuery.of(context).size.shortestSide;
     final _height = MediaQuery.of(context).size.longestSide;
     return InkWell(
-      onTap: (){
-        Navigator.of(context).pushNamed(DetailPage.route, arguments: _complaint);
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(DetailPage.route, arguments: _complaint);
       },
       child: Card(
         elevation: 5,
@@ -49,17 +50,34 @@ class ComplaintWidget extends StatelessWidget {
                   vertical: 5,
                   horizontal: 5,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: <Widget>[
-                    Text(
-                      "${_complaint.location} (${DateFormat.yMMMd().format(DateTime.parse(_complaint.time))})",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      _complaint.description.length < 100
-                          ? _complaint.description
-                          : (_complaint.description.substring(0, 100) + "..."),
+                    if (_complaint.approved)
+                      Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image:
+                                AssetImage("assets/images/approved_stamp.png"),
+                          ),
+                        ),
+                        child: Container(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "${_complaint.location} (${DateFormat.yMMMd().format(DateTime.parse(_complaint.time))})",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          _complaint.description.length < 100
+                              ? _complaint.description
+                              : (_complaint.description.substring(0, 100) +
+                                  "..."),
+                        ),
+                      ],
                     ),
                   ],
                 ),

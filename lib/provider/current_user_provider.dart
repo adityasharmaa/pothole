@@ -47,7 +47,8 @@ class CurrentUserProvider with ChangeNotifier{
       "status": "Pending",
       "progress": 0,
       "approved": false,
-      "priority": "Medium"
+      "priority": "Medium",
+      "location": complaint.location,
     };
 
     try{

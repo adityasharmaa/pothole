@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:pothole/models/complaint.dart';
 import 'package:pothole/provider/complaints_provider.dart';
 import 'package:pothole/provider/current_user_provider.dart';
@@ -69,6 +67,9 @@ class _DetailPageState extends State<DetailPage> {
       _approved = _complaint.approved;
       _changedStatus = _complaint.status;
       _priority = _complaint.priority;
+      _progressController.value = TextEditingValue(
+        text: "${_complaint.progress}"
+      );
       _userType = Provider.of<CurrentUserProvider>(context, listen: false)
                   .profile
                   .role ==
@@ -80,7 +81,6 @@ class _DetailPageState extends State<DetailPage> {
                   "Citizen"
               ? UserType.C
               : UserType.E;
-      
     });
     addMarker();
   }
@@ -120,10 +120,11 @@ class _DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: Text("Complaint"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _updateComplaint,
-          )
+          if (_userType != UserType.C)
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: _updateComplaint,
+            ),
         ],
       ),
       body: _complaint == null
@@ -144,7 +145,7 @@ class _DetailPageState extends State<DetailPage> {
                           itemBuilder: (context, index) {
                             return Image.network(
                               _complaint.image,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             );
                           },
                         ),
@@ -203,7 +204,7 @@ class _DetailPageState extends State<DetailPage> {
                             _userType == UserType.A
                                 ? _statusDown()
                                 : Text(
-                                    _changedStatus,
+                                    _complaint.status,
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -221,7 +222,7 @@ class _DetailPageState extends State<DetailPage> {
                           children: <Widget>[
                             Text("Progress",
                                 style: Theme.of(context).textTheme.subhead),
-                            _userType == UserType.C
+                            _userType == UserType.C || _userType == UserType.E
                                 ? CircularPercentIndicator(
                                     radius: _width * 0.15,
                                     lineWidth: 5,
@@ -268,30 +269,54 @@ class _DetailPageState extends State<DetailPage> {
                             ],
                           ),
                         ),
-                      if (_userType == UserType.E)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Approve",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Switch(
-                              value: _approved,
-                              onChanged: (value) {
-                                setState(() {
-                                  _approved = value;
-                                });
-                              },
-                            ),
-                          ],
+                      if (_userType == UserType.E && _complaint.progress == 100)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 5,
+                            bottom: 5,
+                            left: 10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Approve",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Switch(
+                                value: _approved,
+                                onChanged: (value) {
+                                  _edited = true;
+                                  setState(() {
+                                    _approved = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                        Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/images/Delhi_Google_Maps.jpg",
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Padding(
                           padding: EdgeInsets.all(2.0),
-                          child: GoogleMap(
+                          child: Center(
+                            child: Text("Map"),
+                          ),
+                          /*GoogleMap(
                             zoomGesturesEnabled: true,
                             markers: _markers,
                             onMapCreated: _onMapCreated,
@@ -314,7 +339,9 @@ class _DetailPageState extends State<DetailPage> {
                                 Factory<ScaleGestureRecognizer>(
                                     () => ScaleGestureRecognizer()),
                               ),
-                          )))
+                          ),*/
+                        ),
+                      ),
                     ],
                   ),
                   Positioned.fill(
@@ -330,7 +357,6 @@ class _DetailPageState extends State<DetailPage> {
                   SizedBox(
                     height: 5,
                   ),
-                  
                 ],
               ),
             ),
@@ -346,49 +372,6 @@ class _DetailPageState extends State<DetailPage> {
       throw 'Could not open the map.';
     }
   }
-
-  /* DropdownButton _progressDown() => DropdownButton<int>(
-        hint: Text("Progress"),
-        icon: Icon(Icons.arrow_drop_down),
-        items: [
-          DropdownMenuItem(
-            value: 1,
-            child: Text(
-              "0",
-            ),
-          ),
-          DropdownMenuItem(
-            value: 2,
-            child: Text(
-              "25",
-            ),
-          ),
-          DropdownMenuItem(
-            value: 3,
-            child: Text(
-              "50",
-            ),
-          ),
-          DropdownMenuItem(
-            value: 4,
-            child: Text(
-              "75",
-            ),
-          ),
-          DropdownMenuItem(
-            value: 5,
-            child: Text(
-              "100",
-            ),
-          ),
-        ],
-        onChanged: (value) {
-          setState(() {
-            _changedProgress = value;
-          });
-        },
-        value: _changedProgress,
-      ); */
 
   DropdownButton _statusDown() => DropdownButton<String>(
         hint: Text("Status"),
@@ -406,10 +389,11 @@ class _DetailPageState extends State<DetailPage> {
             _changedStatus = value;
           });
         },
+        value: _changedStatus,
       );
 
   DropdownButton _priorityDown() => DropdownButton<String>(
-        hint: Text("Status"),
+        hint: Text("Priority"),
         icon: Icon(Icons.arrow_drop_down),
         items: ["Low", "Medium", "High"].map((value) {
           return DropdownMenuItem<String>(
@@ -423,5 +407,6 @@ class _DetailPageState extends State<DetailPage> {
             _priority = value;
           });
         },
+        value: _priority,
       );
 }

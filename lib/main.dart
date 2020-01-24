@@ -6,7 +6,7 @@ import 'package:pothole/provider/my_complaints_provider.dart';
 import 'package:pothole/provider/googlemap_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
 import 'package:pothole/screens/complaints_list.dart';
-import 'package:pothole/screens/detailpage.dart';
+import 'package:pothole/screens/complaint_detail_page.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:pothole/screens/splash_screen.dart';
 import 'package:provider/provider.dart';

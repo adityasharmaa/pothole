@@ -26,7 +26,7 @@ class ComplaintsProvider with ChangeNotifier{
 
   Future<void> updateComplaint(String id, Map<String,dynamic> data) async{
     try{
-      await Firestore.instance.collection("complaints").document(id).setData(data);
+      await Firestore.instance.collection("complaints").document(id).updateData(data);
     }catch(e){
       print(e.toString());
       throw e;
