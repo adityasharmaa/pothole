@@ -27,7 +27,8 @@ class _SplashScreenState extends State<SplashScreen>
       duration: Duration(milliseconds: 700),
     );
 
-    _logoAnimation = Tween<double>(begin: 100, end: 200).animate(CurvedAnimation(
+    _logoAnimation =
+        Tween<double>(begin: 100, end: 200).animate(CurvedAnimation(
       curve: Interval(0.0, 1, curve: Curves.easeInOut),
       parent: _animationController,
     ));
@@ -41,17 +42,19 @@ class _SplashScreenState extends State<SplashScreen>
     _init();
   }
 
+  
+
   void _init() async {
     final user = await Auth().getCurrentUser();
-    if (user != null){
-      final currentUser = Provider.of<CurrentUserProvider>(context, listen: false);
+    if (user != null) {
+      final currentUser =
+          Provider.of<CurrentUserProvider>(context, listen: false);
       await currentUser.getCurrentUser();
-      if(currentUser.profile.role == "Citizen")
+      if (currentUser.profile.role == "Citizen")
         Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
       else
         Navigator.of(context).pushReplacementNamed(ComplaintsList.route);
-    }
-    else
+    } else
       Navigator.of(context).pushReplacementNamed(AuthScreen.route);
   }
 

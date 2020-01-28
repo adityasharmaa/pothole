@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pothole/helpers/messaging.dart';
 import 'package:pothole/models/complaint.dart';
 import 'package:pothole/provider/current_user_provider.dart';
 import 'package:provider/provider.dart';
@@ -129,7 +131,9 @@ class _AddComplaintState extends State<AddComplaint> {
     try {
       final fileName = DateTime.now().toIso8601String();
 
-      final storageTaskSnapshot = await FirebaseStorage.instance
+      StorageTaskSnapshot storageTaskSnapshot;
+
+      storageTaskSnapshot = await FirebaseStorage.instance
           .ref()
           .child("complaints_images")
           .child(fileName)
@@ -189,8 +193,7 @@ class _AddComplaintState extends State<AddComplaint> {
       final currentUser =
           Provider.of<CurrentUserProvider>(context, listen: false);
 
-      await currentUser.addComplaint(
-        Complaint(
+      final newComplaint = Complaint(
           authorId: currentUser.profile.id,
           description: _descriptionController.text,
           image: imageUrl,
@@ -201,10 +204,20 @@ class _AddComplaintState extends State<AddComplaint> {
           lan:
               "28.5171999", //TODO mapProvider.currentPosition.longitude.toString(),
           location: _locationController.text,
-        ),
+        );
+
+      await currentUser.addComplaint(
+        newComplaint
       );
 
       _showSnackbar("Complaint filed.");
+      
+      Messaging.sendNotification(
+        topic: "civil_agency",
+        title: "${newComplaint.location} (${DateFormat.yMMMd().format(DateTime.parse(newComplaint.time))})",
+        body: "A new complaint has been filed in your area.",
+        image: newComplaint.image,
+      );
 
       setState(() {
         _pickedImage = null;

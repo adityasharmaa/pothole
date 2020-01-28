@@ -13,10 +13,7 @@ enum ProgressThickness {
 class Progress extends StatefulWidget {
   final double width;
   final StorageTaskSnapshot storageTaskSnapshot;
-  Progress(
-      {
-      this.width,
-      this.storageTaskSnapshot});
+  Progress({@required this.width,@required this.storageTaskSnapshot});
   @override
   _ProgressState createState() => _ProgressState();
 }
@@ -29,8 +26,8 @@ class _ProgressState extends State<Progress> {
     _setListener();
   }
 
-  void _setListener(){
-    _timer = Timer.periodic(const Duration(seconds: 1), (_){
+  void _setListener() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {});
     });
   }
@@ -38,32 +35,43 @@ class _ProgressState extends State<Progress> {
   @override
   void dispose() {
     super.dispose();
-    if(_timer != null)
-      _timer.cancel();
+    if (_timer != null) _timer.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
-    final widthCompleted = widget.storageTaskSnapshot.bytesTransferred * widget.width / widget.storageTaskSnapshot.totalByteCount;
-    return Container(
-      width: widget.width,
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: widthCompleted,
-            child: Divider(
-              thickness: 5,
-              color: Theme.of(context).primaryColorDark,
-            ),
+    final double widthCompleted = widget.storageTaskSnapshot == null
+        ? 0
+        : widget.storageTaskSnapshot.bytesTransferred *
+            widget.width /
+            widget.storageTaskSnapshot.totalByteCount;
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        width: widget.width,
+        height: MediaQuery.of(context).size.height * 0.2,
+        child: Center(
+          child: Row(
+            children: <Widget>[
+              SizedBox(
+                width: widthCompleted,
+                child: Divider(
+                  thickness: 5,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+              ),
+              SizedBox(
+                width: widget.width - widthCompleted,
+                child: Divider(
+                  thickness: 5,
+                  color: Colors.grey[400],
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            width: widget.width - widthCompleted,
-            child: Divider(
-              thickness: 5,
-              color: Colors.grey[400],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -10,12 +10,12 @@ import 'package:pothole/screens/complaint_detail_page.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:pothole/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
-
-import 'widgets/custom_camera.dart';
+//import 'widgets/custom_camera.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         routes: {
           ScreenSelector.route: (_) => ScreenSelector(),
           AuthScreen.route: (_) => AuthScreen(),
-          TakePictureScreen.route: (_) => TakePictureScreen(),
+          //TakePictureScreen.route: (_) => TakePictureScreen(),
           DetailPage.route: (_) => DetailPage(),
           ComplaintsList.route: (_) => ComplaintsList(),
         },

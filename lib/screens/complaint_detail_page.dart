@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:intl/intl.dart';
+import 'package:pothole/helpers/http_exception.dart';
+import 'package:pothole/helpers/messaging.dart';
 import 'package:pothole/models/complaint.dart';
 import 'package:pothole/provider/complaints_provider.dart';
 import 'package:pothole/provider/current_user_provider.dart';
@@ -67,9 +70,8 @@ class _DetailPageState extends State<DetailPage> {
       _approved = _complaint.approved;
       _changedStatus = _complaint.status;
       _priority = _complaint.priority;
-      _progressController.value = TextEditingValue(
-        text: "${_complaint.progress}"
-      );
+      _progressController.value =
+          TextEditingValue(text: "${_complaint.progress}");
       _userType = Provider.of<CurrentUserProvider>(context, listen: false)
                   .profile
                   .role ==
@@ -103,13 +105,36 @@ class _DetailPageState extends State<DetailPage> {
         _isLoading = true;
       });
 
-      await Provider.of<ComplaintsProvider>(context, listen: false)
-          .updateComplaint(_complaint.id, data);
+      try {
+        await Provider.of<ComplaintsProvider>(context, listen: false)
+            .updateComplaint(_complaint.id, data);
+        if (_userType == UserType.A)
+          Messaging.sendNotification(
+            topic: _complaint.authorId,
+            title: "${_complaint.location} (${DateFormat.yMMMd().format(DateTime.parse(_complaint.time))})",
+            body: "Your complaint status/progress was updated.",
+            image: _complaint.image,
+            complaintId: _complaint.id,
+          );
+      } on HttpException catch (e) {
+        _showSnackBar(e.toString());
+      } catch (e) {}
 
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _showSnackBar(String message) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ));
   }
 
   @override
