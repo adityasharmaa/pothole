@@ -44,6 +44,11 @@ class CurrentUserProvider with ChangeNotifier{
       "lan":complaint.lan,
       "time": DateTime.now().toIso8601String(),
       "isAnonymous": complaint.isAnonymous,
+      "status": "Pending",
+      "progress": 0,
+      "approved": false,
+      "priority": "Medium",
+      "location": complaint.location,
     };
 
     try{

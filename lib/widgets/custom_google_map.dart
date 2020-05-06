@@ -15,7 +15,7 @@ class CustomGoogleMap extends StatefulWidget {
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   Position _currentPosition;
   final Set<Marker> _markers = {};
-  bool _hasLoaded=true;
+  bool _hasLoaded = true;
   Completer<GoogleMapController> mapController = Completer();
 
   void _onMapCreated(GoogleMapController controller) {
@@ -37,45 +37,52 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width,
-      child:_hasLoaded?Center(child: CircularProgressIndicator()):Padding(
-        padding: EdgeInsets.all(1.0),
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: GoogleMap(
-              zoomGesturesEnabled: true,
-              markers: _markers,
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _markers.elementAt(0).position,
-                zoom: 17,
+      child: _hasLoaded
+          ? Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: EdgeInsets.all(1.0),
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(
+                    child: GoogleMap(
+                      zoomGesturesEnabled: true,
+                      markers: _markers,
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: CameraPosition(
+                        target: _markers.elementAt(0).position,
+                        zoom: 17,
+                      ),
+                      gestureRecognizers: Set()
+                        ..add(Factory<PanGestureRecognizer>(
+                            () => PanGestureRecognizer()))
+                        ..add(
+                          Factory<VerticalDragGestureRecognizer>(
+                              () => VerticalDragGestureRecognizer()),
+                        )
+                        ..add(
+                          Factory<HorizontalDragGestureRecognizer>(
+                              () => HorizontalDragGestureRecognizer()),
+                        )
+                        ..add(
+                          Factory<ScaleGestureRecognizer>(
+                              () => ScaleGestureRecognizer()),
+                        ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 2,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.refresh,
+                        size: 35,
+                      ),
+                      onPressed: () => _getCurrentLocation(context),
+                    ),
+                  )
+                ],
               ),
-              gestureRecognizers: Set()
-                ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-                ..add(
-                  Factory<VerticalDragGestureRecognizer>(
-                      () => VerticalDragGestureRecognizer()),
-                )
-                ..add(
-                  Factory<HorizontalDragGestureRecognizer>(
-                      () => HorizontalDragGestureRecognizer()),
-                )
-                ..add(
-                  Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
-                ),
             ),
-            ),
-            Positioned(
-              top: 0,
-              right: 2,
-              child: IconButton(
-                icon: Icon(Icons.refresh,size: 35,),
-                onPressed: ()=>_getCurrentLocation(context),
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 
@@ -87,7 +94,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
         .then((Position newPosition) {
       setState(() {
         _currentPosition = newPosition;
-        Provider.of<GoogleMapProvider>(context,listen: false).changePosition(newPosition);
+        Provider.of<GoogleMapProvider>(context, listen: false)
+            .changePosition(newPosition);
         _markers.add(Marker(
           markerId: MarkerId("1"),
           position: LatLng(
@@ -98,7 +106,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
           // )
         ));
       });
-      _hasLoaded=false;
+      _hasLoaded = false;
     }).catchError((e) {
       print(e);
     });

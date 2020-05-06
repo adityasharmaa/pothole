@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pothole/helpers/firebase_auth.dart';
 import 'package:pothole/provider/current_user_provider.dart';
 import 'package:pothole/screens/auth_screen.dart';
+import 'package:pothole/screens/complaints_list.dart';
+import 'package:pothole/screens/screen_selector.dart';
 import 'package:provider/provider.dart';
-
-import 'citizen/screen_selector.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
@@ -27,7 +27,8 @@ class _SplashScreenState extends State<SplashScreen>
       duration: Duration(milliseconds: 700),
     );
 
-    _logoAnimation = Tween<double>(begin: 100, end: 200).animate(CurvedAnimation(
+    _logoAnimation =
+        Tween<double>(begin: 100, end: 200).animate(CurvedAnimation(
       curve: Interval(0.0, 1, curve: Curves.easeInOut),
       parent: _animationController,
     ));
@@ -41,13 +42,19 @@ class _SplashScreenState extends State<SplashScreen>
     _init();
   }
 
+  
+
   void _init() async {
     final user = await Auth().getCurrentUser();
-    if (user != null){
-      await Provider.of<CurrentUserProvider>(context, listen: false).getCurrentUser();
-      Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
-    }
-    else
+    if (user != null) {
+      final currentUser =
+          Provider.of<CurrentUserProvider>(context, listen: false);
+      await currentUser.getCurrentUser();
+      if (currentUser.profile.role == "Citizen")
+        Navigator.of(context).pushReplacementNamed(ScreenSelector.route);
+      else
+        Navigator.of(context).pushReplacementNamed(ComplaintsList.route);
+    } else
       Navigator.of(context).pushReplacementNamed(AuthScreen.route);
   }
 
