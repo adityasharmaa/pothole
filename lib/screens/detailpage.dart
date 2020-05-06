@@ -40,29 +40,25 @@ class _DetailPageState extends State<DetailPage> {
         "Civil Agency";
   }
 
-  void addMarker(){
-        _markers.add(Marker(
-          markerId: MarkerId("1"),
-          position: LatLng(
-            40.12,
-            48.20
-          ),
-          // infoWindow: InfoWindow(
-          // )
-        ));
+  void addMarker() {
+    _markers.add(Marker(
+      markerId: MarkerId("1"),
+      position: LatLng(40.12, 48.20),
+      // infoWindow: InfoWindow(
+      // )
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
     return Scaffold(
         body: SingleChildScrollView(
-                  child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
             Container(
               height: _height * 0.35,
               width: _width,
@@ -116,12 +112,12 @@ class _DetailPageState extends State<DetailPage> {
                           style: Theme.of(context).textTheme.subhead,
                         )
                       : _progressDown(),
-                  !isAuthority ? 
-                  Text(
+                  !isAuthority
+                      ? Text(
                           "Status",
                           style: Theme.of(context).textTheme.subhead,
                         )
-                     : _statusDown(),
+                      : _statusDown(),
                 ]),
             SizedBox(
               height: 5,
@@ -156,7 +152,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                     )))
           ]),
-        ));
+    ));
   }
 
   Future<void> openMap(double latitude, double longitude) async {
@@ -241,6 +237,5 @@ class _DetailPageState extends State<DetailPage> {
             _changedStatus = value;
           });
         },
-        
       );
 }
