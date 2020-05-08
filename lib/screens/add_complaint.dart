@@ -1,5 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pothole/helpers/messaging.dart';
@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
 /*import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as file;*/
 
@@ -24,6 +26,34 @@ class _AddComplaintState extends State<AddComplaint> {
   bool _isLoading = false;
   bool _isAnonymous = false;
   bool _isPictureValid = false;
+  var objectsDetected = [];
+
+  Future<void> getImageInfo(File pickedImage) async {
+    objectsDetected = [];
+    const String _url = "https://keraspothhole.herokuapp.com/predict";
+    final mimeTypeData =
+        lookupMimeType(pickedImage.path, headerBytes: [0xFF, 0xD8]).split('/');
+    // Intilize the multipart request
+    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(_url));
+    final file = await http.MultipartFile.fromPath(
+      'image', pickedImage.path,
+      //contentType: MediaType(mimeTypeData[0], mimeTypeData[1])
+    );
+    imageUploadRequest.fields['ext'] = mimeTypeData[1];
+    imageUploadRequest.files.add(file);
+    try {
+      final streamedResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      if (responseData["success"] == false) {
+        return null;
+      }
+      objectsDetected = responseData["data"];
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<void> _getImage(bool useCamera) async {
     final pickedImage = await ImagePicker.pickImage(
@@ -36,75 +66,49 @@ class _AddComplaintState extends State<AddComplaint> {
       _isLoading = true;
     });
 
-    final FirebaseVisionImage visionImage =
-        FirebaseVisionImage.fromFile(pickedImage);
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+    // final FirebaseVisionImage visionImage =
+    //     FirebaseVisionImage.fromFile(pickedImage);
+    // final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    // final List<ImageLabel> labels = await labeler.processImage(visionImage);
+    // print("***************************");
+    // for(var label in labels){
+    // print(label.text);
+
+    // }
+
+    await getImageInfo(_pickedImage);
+    for (String item in objectsDetected) {
+      print(item);
+    }
 
     setState(() {
       _isLoading = false;
     });
 
-    List<String> objectsDetected = [];
-
-    for (ImageLabel label in labels) {
-      final String text = label.text;
-      final String entityId = label.entityId;
-      final double confidence = label.confidence;
-      objectsDetected.add(text);
-      print(
-          "DETECTION #${labels.indexOf(label)}:: text: $text, entityId: $entityId, confidence: $confidence\n");
-    }
-
-    labeler.close();
-
-    if (objectsDetected.contains("Asphalt")) {
-      if (objectsDetected.contains("Road") ||
-          objectsDetected.contains("Soil") ||
-          objectsDetected.contains("Sand") ||
-          objectsDetected.contains("Rock"))
+    if ((objectsDetected.contains("asphalt") &&
+                objectsDetected.contains("cracks") &&
+                objectsDetected.contains("pothole") ||
+            objectsDetected.contains("pothole") &&
+                objectsDetected.contains("asphalt") ||
+            objectsDetected.contains("asphalt") &&
+                objectsDetected.contains("cracks") ||
+            objectsDetected.contains("cracks") ||
+            objectsDetected.contains("pothole") &&
+                objectsDetected.contains("cracks")) ||
+        objectsDetected.contains("pothole")) {
+      if (!objectsDetected.contains("wall") &&
+          !objectsDetected.contains("tree")) {
         _isPictureValid = true;
-      else {
+      } else {
         _isPictureValid = false;
-        _showErrorDialog("This image does not contain pothole. Please click another image.");
+        _showErrorDialog(
+            "This image does not contain pothole. Please click another image.");
       }
     } else {
       _isPictureValid = false;
-      _showErrorDialog("This image does not contain pothole. Please click another image.");
+      _showErrorDialog(
+          "This image does not contain pothole. Please click another image.");
     }
-
-    /*setState(() {
-      _isLoading = true;
-    });
-
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-
-    final directory = await file.getExternalStorageDirectory();
-    final dataset = Directory(path.join(directory.path, "pothole_data_set"));
-
-    final results = await File(path.join(directory.path, "detection_results.txt")).create();
-
-    for (FileSystemEntity item in await dataset.list().toList()) {
-      File file = File(item.path);
-      final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(file);
-      final List<ImageLabel> labels = await labeler.processImage(visionImage);
-
-      results.writeAsStringSync('Picture #${_fileName(file.path)}\n', mode: FileMode.append);
-
-      for (ImageLabel label in labels) {
-        final String text = label.text;
-        final String entityId = label.entityId;
-        final double confidence = label.confidence;
-        final result = "DETECTION #${labels.indexOf(label)}:: text: $text, entityId: $entityId, confidence: $confidence\n";
-        results.writeAsStringSync(result, mode: FileMode.append);
-      }
-
-      results.writeAsStringSync("\n\n", mode: FileMode.append);
-    }
-
-    setState(() {
-      _isLoading = false;
-    });*/
   }
 
   void _showErrorDialog(String message) {
@@ -194,27 +198,26 @@ class _AddComplaintState extends State<AddComplaint> {
           Provider.of<CurrentUserProvider>(context, listen: false);
 
       final newComplaint = Complaint(
-          authorId: currentUser.profile.id,
-          description: _descriptionController.text,
-          image: imageUrl,
-          time: DateTime.now().toIso8601String(),
-          isAnonymous: _isAnonymous,
-          lat:
-              "77.2381475", //TODO _mapProvider.currentPosition.latitude.toString(),
-          lan:
-              "28.5171999", //TODO mapProvider.currentPosition.longitude.toString(),
-          location: _locationController.text,
-        );
-
-      await currentUser.addComplaint(
-        newComplaint
+        authorId: currentUser.profile.id,
+        description: _descriptionController.text,
+        image: imageUrl,
+        time: DateTime.now().toIso8601String(),
+        isAnonymous: _isAnonymous,
+        lat:
+            "77.2381475", //TODO _mapProvider.currentPosition.latitude.toString(),
+        lan:
+            "28.5171999", //TODO mapProvider.currentPosition.longitude.toString(),
+        location: _locationController.text,
       );
 
+      await currentUser.addComplaint(newComplaint);
+
       _showSnackbar("Complaint filed.");
-      
+
       Messaging.sendNotification(
         topic: "civil_agency",
-        title: "${newComplaint.location} (${DateFormat.yMMMd().format(DateTime.parse(newComplaint.time))})",
+        title:
+            "${newComplaint.location} (${DateFormat.yMMMd().format(DateTime.parse(newComplaint.time))})",
         body: "A new complaint has been filed in your area.",
         image: newComplaint.image,
       );
