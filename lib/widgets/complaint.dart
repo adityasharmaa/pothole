@@ -11,8 +11,8 @@ class ComplaintWidget extends StatelessWidget {
   ComplaintWidget(this._complaint);
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.shortestSide;
-    final _height = MediaQuery.of(context).size.longestSide;
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
     return InkWell(
       onTap: () {
         Navigator.of(context)
@@ -23,9 +23,12 @@ class ComplaintWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        child: SizedBox(
-          height: _height * 0.12,
+        child: Container(
+          height: _height * 0.1,
           width: _width,
+          constraints: BoxConstraints(
+            minHeight: 65,
+          ),
           child: Row(
             children: <Widget>[
               Container(
@@ -40,7 +43,7 @@ class ComplaintWidget extends StatelessWidget {
                     image: NetworkImage(
                       _complaint.image,
                     ),
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
