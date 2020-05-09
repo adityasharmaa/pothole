@@ -242,12 +242,14 @@ class _AddComplaintState extends State<AddComplaint> {
         onTap: () => _getImage(useCamera),
         child: Container(
           height: height * 0.05,
+          constraints: BoxConstraints(minHeight:32),
+          
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: Theme.of(context).primaryColor,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.only(top: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

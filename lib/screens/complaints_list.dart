@@ -90,7 +90,7 @@ class _ComplaintsListState extends State<ComplaintsList> {
 
   @override
   Widget build(BuildContext context) {
-    final complaints = Provider.of<ComplaintsProvider>(context);
+    final complaints = Provider.of<ComplaintsProvider>(context,listen: true);
     final user = Provider.of<CurrentUserProvider>(context, listen: false).profile;
     return Scaffold(
       appBar: AppBar(

@@ -10,7 +10,6 @@ import 'package:pothole/screens/complaint_detail_page.dart';
 import 'package:pothole/screens/screen_selector.dart';
 import 'package:pothole/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
-//import 'widgets/custom_camera.dart';
 
 void main() => runApp(MyApp());
 
