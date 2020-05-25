@@ -10,13 +10,13 @@ class ComplaintsProvider with ChangeNotifier{
   }
 
   Future<void> fetchComplaints() async{
+
     try {
       final response = await Firestore.instance
           .collection("complaints")
           .getDocuments();
 
       _complaints = response.documents.map((snapshot) => Complaint.fromSnapshot(snapshot)).toList();
-
       notifyListeners();
     } catch (e) {
       print(e.toString());

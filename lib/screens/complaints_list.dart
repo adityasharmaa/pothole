@@ -113,7 +113,8 @@ class _ComplaintsListState extends State<ComplaintsList> {
             ],
             onSelected: (selectedValue) async {
               if (selectedValue == PopupMenuEntries.Reload) {
-                complaints.fetchComplaints();
+                 complaints.fetchComplaints();
+
               } else {
                 await _firebaseMessaging.unsubscribeFromTopic("civil_agency");
                 await _firebaseMessaging.unsubscribeFromTopic(Provider.of<CurrentUserProvider>(context,listen: false).profile.id);

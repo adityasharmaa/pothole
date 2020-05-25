@@ -98,6 +98,7 @@ class _AddComplaintState extends State<AddComplaint> {
         objectsDetected.contains("pothole")) {
       if (!objectsDetected.contains("wall") &&
           !objectsDetected.contains("tree")) {
+       
         _isPictureValid = true;
       } else {
         _isPictureValid = false;
@@ -242,8 +243,7 @@ class _AddComplaintState extends State<AddComplaint> {
         onTap: () => _getImage(useCamera),
         child: Container(
           height: height * 0.05,
-          constraints: BoxConstraints(minHeight:32),
-          
+          constraints: BoxConstraints(minHeight: 32),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: Theme.of(context).primaryColor,

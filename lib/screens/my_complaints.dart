@@ -39,7 +39,7 @@ class _MyComplaintsState extends State<MyComplaints> {
     _count++;
     final myComplaints =
         Provider.of<MyComplaintsProvider>(context, listen: true);
-    print(myComplaints.complaints.isEmpty);
+        
     return _isLoading
         ? Center(
             child: CircularProgressIndicator(),

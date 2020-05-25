@@ -90,6 +90,7 @@ class _ScreenSelectorState extends State<ScreenSelector> {
             ],
             onSelected: (selectedValue) async {
               if (selectedValue == PopupMenuEntries.Reload) {
+
                 Provider.of<MyComplaintsProvider>(context, listen: false)
                     .fetchComplaints();
               } else if (selectedValue == PopupMenuEntries.LogOut) {
